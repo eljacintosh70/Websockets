@@ -1,9 +1,10 @@
-program chatServer;
+unit WSServerControl;
 
 {$mode objfpc}{$H+}
 
-uses {$IFDEF UNIX}
-  cthreads, {$ENDIF}
+interface
+
+uses
   classes,
   wsutils,
   wsmessages,
@@ -27,6 +28,8 @@ type
 
 var
   socket: TWebSocketServer;
+
+implementation
 
   { TSocketHandler }
 
