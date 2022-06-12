@@ -24,6 +24,11 @@ type
       const ResponseHeaders: TStrings): boolean; override;
     procedure DoHandleCommunication(ACommunication: TWebsocketCommunicator);
       override;
+  protected
+    procedure disconnectFn(connectionId: TWebsocketCommunicator); virtual; abstract;
+    procedure HandleMessageFn(connectionId: TWebsocketCommunicator; body: UTF8String); virtual; abstract;  
+  public
+    constructor Create; virtual;
   end;
 
   TSocketHandlerClass = class of TSocketHandler;
@@ -67,8 +72,9 @@ implementation
   var
     Comm: TWebsocketCommunicator;
   begin
-    Comm := TWebsocketCommunicator(Sender);
-    WriteLn('Connection to ', Comm.SocketStream.RemoteAddress.Address, ' closed');
+    Comm := TWebsocketCommunicator(Sender);   
+    //WriteLn('Connection to ', Comm.SocketStream.RemoteAddress.Address, ' closed');
+    disconnectFn(Comm);
   end;
 
   procedure TSocketHandler.MessageReceived(Sender: TObject);
@@ -84,12 +90,18 @@ implementation
       for m in Messages do
         if m is TWebsocketStringMessage then
         begin
-          WriteLn('Message from ', Comm.SocketStream.RemoteAddress.Address,
-            ': ', TWebsocketStringMessage(m).Data);
+          //WriteLn('Message from ', Comm.SocketStream.RemoteAddress.Address,
+          //  ': ', TWebsocketStringMessage(m).Data);    
+          HandleMessageFn(Comm, TWebsocketStringMessage(m).Data);
         end;
     finally
       Messages.Free;
     end;
+  end;
+
+  constructor TSocketHandler.Create;
+  begin
+    inherited Create;
   end;
 
 procedure RunServer(HandlerClass: TSocketHandlerClass);
