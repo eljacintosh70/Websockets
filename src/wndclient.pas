@@ -9,16 +9,17 @@ uses
   WSControl;
 
 const
-  {
+  {}
   UseSLL = False;
   ServerUrl =  '127.0.0.1';
   ServerPort = 8080;
   ServerPath = '';
-  }
+  {
   UseSLL = True;
   ServerUrl =  'XXXXX.execute-api.YYYY.amazonaws.com';
   ServerPort = 443;
   ServerPath = '/production';
+  }
 
 type
 
