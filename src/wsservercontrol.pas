@@ -26,6 +26,10 @@ type
       override;
   end;
 
+  TSocketHandlerClass = class of TSocketHandler;
+
+procedure RunServer(HandlerClass: TSocketHandlerClass);
+
 var
   socket: TWebSocketServer;
 
@@ -88,14 +92,17 @@ implementation
     end;
   end;
 
+procedure RunServer(HandlerClass: TSocketHandlerClass);
 begin
   socket := TWebSocketServer.Create(8080);
   try
     socket.FreeHandlers := True;
     //socket.AcceptingMethod:=samThreadPool;
-    socket.RegisterHandler('*', '*', TSocketHandler.Create, True, True);
+    socket.RegisterHandler('*', '*', HandlerClass.Create, True, True);
     socket.Start;
   finally
     socket.Free;
   end;
+end;
+
 end.
